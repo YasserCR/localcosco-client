@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar compra</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        form {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background-color: #f5f5f5;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="venta.html">Realizar Venta</a></li>
+            <li><a href="compra.html">Realizar Compra</a></li>
+            <li><a href="productos.html">Productos</a></li>
+        </ul>
+    </nav>
+    <h1>Registrar Compra</h1>
+    <form id="compraForm">
+        <label for="productoSelect">Seleccione un producto:</label>
+        <select id="productoSelect" name="producto_id">
+            <!-- Opciones de productos se llenarán aquí usando JavaScript -->
+        </select>
+
+
+
+        <label for="cantidadInput">Cantidad Comprada:</label>
+        <input type="number" id="cantidadInput" name="cantidad_comprada" required>
+
+
+
+        <button type="submit">Registrar Compra</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const productoSelect = document.getElementById('productoSelect');
+            const cantidadInput = document.getElementById('cantidadInput');
+            const compraForm = document.getElementById('compraForm');
+
+            // Cargar opciones de productos desde la API
+            fetch('http://localhost:3000/producto/listar')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(producto => {
+                        const option = document.createElement('option');
+                        option.value = producto.id_producto;
+                        option.textContent = producto.nombre;
+                        productoSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error al obtener productos:', error));
+
+            compraForm.addEventListener('submit', event => {
+                event.preventDefault();
+
+                const selectedProductId = productoSelect.value;
+                const cantidadComprada = parseInt(cantidadInput.value);
+
+                // Enviar la compra al backend
+                fetch('http://localhost:3000/compra', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ producto_id: selectedProductId, cantidad_comprada: cantidadComprada })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.message);
+                        alert('Compra registrada exitosamente');
+                        productoSelect.selectedIndex = 0;
+                        cantidadInput.value = '';
+                    })
+                    .catch(error => {
+                        console.error('Error al registrar la compra:', error);
+                        alert('Error al registrar la compra');
+                    });
+            });
+        });
+    </script>
+</body>
+
+</html>

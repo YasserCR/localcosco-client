@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="venta.html">Realizar Venta</a></li>
+            <li><a href="compra.html">Realizar Compra</a></li>
+            <li><a href="productos.html">Productos</a></li>
+        </ul>
+    </nav>
+    <h1>Inventario de Productos</h1>
+    <table id="tabla-inventario">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad en Inventario</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Los datos del inventario se llenarán aquí usando JavaScript -->
+        </tbody>
+    </table>
+    <a href="registrar_producto.html">Registrar Nuevo Producto</a>
+    <script>
+        // Función para obtener los datos del inventario y llenar la tabla
+        async function obtenerInventario() {
+            const response = await fetch('http://localhost:3000/inventario');
+            const data = await response.json();
+
+            const tablaInventario = document.getElementById('tabla-inventario');
+            const tbody = tablaInventario.querySelector('tbody');
+
+            tbody.innerHTML = ''; // Limpiar contenido previo
+
+            data.forEach(producto => {
+                const fila = document.createElement('tr');
+
+                const nombreCel = document.createElement('td');
+                nombreCel.textContent = producto.nombre;
+
+                const cantidadCel = document.createElement('td');
+                cantidadCel.textContent = producto.cantidad;
+
+                fila.appendChild(nombreCel);
+                fila.appendChild(cantidadCel);
+
+                tbody.appendChild(fila);
+            });
+        }
+
+        obtenerInventario(); // Obtener datos al cargar la página
+    </script>
+</body>
+
+</html>
