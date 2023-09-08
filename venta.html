@@ -78,6 +78,9 @@
         <label for="cantidadInput">Cantidad Vendida:</label>
         <input type="number" id="cantidadInput" name="cantidad_vendida" required>
 
+        <label for="fechaVentaInput">Fecha de Venta:</label>
+        <input type="date" id="fechaVentaInput" name="fecha_venta" required>
+
         <button type="submit">Registrar Venta</button>
     </form>
 
@@ -85,6 +88,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const productoSelect = document.getElementById('productoSelect');
             const cantidadInput = document.getElementById('cantidadInput');
+            const fechaVentaInput = document.getElementById('fechaVentaInput');
             const ventaForm = document.getElementById('ventaForm');
 
             // Cargar opciones de productos desde la API
@@ -105,6 +109,7 @@
 
                 const selectedProductId = productoSelect.value;
                 const cantidadVendida = parseInt(cantidadInput.value);
+                const fechaVenta = fechaVentaInput.value;
 
                 // Enviar la venta al backend
                 fetch('http://localhost:3000/venta', {
@@ -112,7 +117,13 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ producto_id: selectedProductId, cantidad_vendida: cantidadVendida })
+                    body: JSON.stringify(
+                        {
+                            producto_id: selectedProductId,
+                            cantidad_vendida: cantidadVendida,
+                            fecha_venta: fechaVenta
+                        }
+                    )
                 })
                     .then(response => response.json())
                     .then(data => {
@@ -120,6 +131,7 @@
                         alert('Venta registrada exitosamente');
                         productoSelect.selectedIndex = 0;
                         cantidadInput.value = '';
+                        fechaVentaInput.value = '';
                     })
                     .catch(error => {
                         console.error('Error al registrar la venta:', error);

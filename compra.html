@@ -80,6 +80,8 @@
         <label for="cantidadInput">Cantidad Comprada:</label>
         <input type="number" id="cantidadInput" name="cantidad_comprada" required>
 
+        <label for="fechaCompraInput">Fecha de Compra:</label>
+        <input type="date" id="fechaCompraInput" name="fecha_compra" required>
 
 
         <button type="submit">Registrar Compra</button>
@@ -89,6 +91,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const productoSelect = document.getElementById('productoSelect');
             const cantidadInput = document.getElementById('cantidadInput');
+            const fechaCompraInput = document.getElementById('fechaCompraInput');
             const compraForm = document.getElementById('compraForm');
 
             // Cargar opciones de productos desde la API
@@ -109,6 +112,7 @@
 
                 const selectedProductId = productoSelect.value;
                 const cantidadComprada = parseInt(cantidadInput.value);
+                const fechaCompra = fechaCompraInput.value;
 
                 // Enviar la compra al backend
                 fetch('http://localhost:3000/compra', {
@@ -116,7 +120,13 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ producto_id: selectedProductId, cantidad_comprada: cantidadComprada })
+                    body: JSON.stringify(
+                        {
+                            producto_id: selectedProductId,
+                            cantidad_comprada: cantidadComprada,
+                            fecha_compra: fechaCompra
+                        }
+                    )
                 })
                     .then(response => response.json())
                     .then(data => {
@@ -124,6 +134,7 @@
                         alert('Compra registrada exitosamente');
                         productoSelect.selectedIndex = 0;
                         cantidadInput.value = '';
+                        fechaCompraInput.value = '';
                     })
                     .catch(error => {
                         console.error('Error al registrar la compra:', error);
